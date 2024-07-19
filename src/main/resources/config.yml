@@ -1,0 +1,22 @@
+# Phantom Toggle Config
+
+
+oldSleepTimeMode: track
+  # track : tracks the time you have spawns disabled, when you turn spawns back on, the statistic reflects the whole time since you had rested previously
+    # add an event to reset prevSleepTime when a player leaves a bed. I want track to reflect how long its actually been since you slept
+  # pause : puts your time since rest statistic on pause while you have phantom spawns disabled, resuming it from where it left off when you turn spawns on again
+  # reset : when turning spawns back on, starts counting time since rest from that time, starting from 0 from that moment, like you just rested
+
+timeSinceLastRestResetTimer: 1200 # seconds
+  # this plugin uses the player statistic TIME_SINCE_REST, and resets it based off of the time set here
+  # 1200 seconds is the default, this is 20 minutes or 1 in-game day
+  # 3600 seconds (3 in-game days) is the longest you'd want to set this, since Phantoms spawn after 3 in-game days of not sleeping.
+
+textHeader: "&r[&#485791Phantom&#21ae06Toggle&r]"
+  # can be used in other text options as %textHeader%
+textReload: "%textHeader% Config Reloaded"
+textPhantomsDisabled: "%textHeader% Your phantom spawns have been &l&cdisabled"
+textPhantomsAlreadyDisabled: "%textHeader% Your phantom spawns are &lalready &r&cdisabled"
+textPhantomsEnabled: "%textHeader% Your phantom spawns have been &l&aenabled"
+textPhantomsAlreadyEnabled: "%textHeader% Your phantom spawns are &lalready &r&aenabled"
+

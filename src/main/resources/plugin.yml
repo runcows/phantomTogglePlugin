@@ -1,0 +1,19 @@
+name: PhantomToggle
+main: io.github.runcows.phantomtoggle.PhantomToggle
+version: 1.0.0
+api-version: 1.13
+author: runcows
+
+commands:
+    phantoms:
+        description: toggles phantom spawning on or off per player
+        usage: /phantoms [on/off]
+        permission: PhantomToggle.use
+
+permissions:
+    use:
+        description: Allows you to use the command /phantoms
+        default: true
+    reload:
+        description: Allows you to reload config from file
+        default: op
