@@ -20,7 +20,6 @@ public class PhantomToggle extends JavaPlugin
     public FileConfiguration config;
     private File playerDataFile;
     private FileConfiguration playerData;
-
     BukkitRunnable resetTime = createNewResetTimer();
 
     public PhantomToggle()
