@@ -1,5 +1,6 @@
 package io.github.runcows.phantomtoggle;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Statistic;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,6 +11,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 public class CommandPhantoms implements CommandExecutor, TabCompleter {
@@ -22,27 +24,27 @@ public class CommandPhantoms implements CommandExecutor, TabCompleter {
         if (sender instanceof Player)
         {
             Player player = (Player) sender;
-            sleepTimeMode = config.getString("oldSleepTimeMode");
+            sleepTimeMode = config.getString("statHandlingMode");
             FileConfiguration playerData = plugin.getPlayerData();
             String playerID = player.getUniqueId().toString();
             if (args.length <= 0)
             {
-                if(playerData.getBoolean(playerID+".enabled"))
-                {//disable it
-                    disable(player,playerID,playerData);
+                if(playerData.getBoolean(playerID+".phantomsDisabled"))
+                {
+                    enablePhantomSpawns(player,playerID,playerData);
                 }
                 else
-                {//disabled OR not there, enable it
-                    enable(player,playerID,playerData);
+                {
+                    disablePhantomSpawns(player,playerID,playerData);
                 }
             }
             else if (args.length == 1)
             {
                 if (args[0].equals("off"))
                 {
-                    if (!playerData.getBoolean(playerID+".enabled"))
+                    if (!playerData.getBoolean(playerID+".phantomsDisabled"))
                     {
-                        enable(player,playerID,playerData);
+                        disablePhantomSpawns(player,playerID,playerData);
                     }
                     else
                     {
@@ -54,9 +56,9 @@ public class CommandPhantoms implements CommandExecutor, TabCompleter {
                 }
                 else if (args[0].equals("on"))
                 {
-                    if (playerData.getBoolean(playerID+".enabled"))
+                    if (playerData.getBoolean(playerID+".phantomsDisabled"))
                     {
-                        disable(player,playerID,playerData);
+                        enablePhantomSpawns(player,playerID,playerData);
                     }
                     else
                     {
@@ -65,17 +67,6 @@ public class CommandPhantoms implements CommandExecutor, TabCompleter {
                         );
                         player.sendMessage(colorMessage);
                     }
-                }
-                else if (player.hasPermission("phantomtoggle.reload") && args[0].equals("reload"))
-                {
-                    plugin.reloadConfig();
-                    plugin.config = plugin.getConfig();
-                    this.config = plugin.getConfig();
-                    plugin.reloadTimer();
-                    String colorMessage = plugin.hex(
-                            config.getString("textReload").replaceAll("%textHeader%",config.getString("textHeader"))
-                    );
-                    player.sendMessage(colorMessage);
                 }
                 else
                 {
@@ -90,9 +81,19 @@ public class CommandPhantoms implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    private void disable(Player player, String playerID, FileConfiguration playerData)
+    private void enablePhantomSpawns(Player player, String playerID, FileConfiguration playerData)
     {
-        if(sleepTimeMode.equals("track") || sleepTimeMode.equals("pause"))
+        if(sleepTimeMode.equals("track"))
+        {
+            playerData.set(
+                    playerID + ".prevSleepTime",
+                    playerData.getInt(playerID + ".prevSleepTime")
+                            + Bukkit.getPlayer(UUID.fromString(playerID)).getStatistic(Statistic.TIME_SINCE_REST)
+            );
+            plugin.savePlayerData(playerData);
+            player.setStatistic(Statistic.TIME_SINCE_REST, playerData.getInt(playerID+".prevSleepTime"));
+        }
+        else if (sleepTimeMode.equals("pause"))
         {
             player.setStatistic(Statistic.TIME_SINCE_REST, playerData.getInt(playerID+".prevSleepTime"));
         }
@@ -100,7 +101,7 @@ public class CommandPhantoms implements CommandExecutor, TabCompleter {
         {
             player.setStatistic(Statistic.TIME_SINCE_REST, 0);
         }
-        playerData.set(playerID+".enabled", false);
+        playerData.set(playerID+".phantomsDisabled", false);
         plugin.savePlayerData(playerData);
         String colorMessage = plugin.hex(
                 config.getString("textPhantomsEnabled").replaceAll("%textHeader%",config.getString("textHeader"))
@@ -108,12 +109,11 @@ public class CommandPhantoms implements CommandExecutor, TabCompleter {
         player.sendMessage(colorMessage);
     }
 
-    private void enable(Player player, String playerID, FileConfiguration playerData)
+    private void disablePhantomSpawns(Player player, String playerID, FileConfiguration playerData)
     {
-        //don't need a config if statement here, just log it to file anyway, not worth the computation
-        playerData.set(playerID+".prevSleepTime",player.getStatistic(Statistic.TIME_SINCE_REST));
+        playerData.set(playerID+".prevSleepTime",player.getStatistic(Statistic.TIME_SINCE_REST)); //just log it anyway
         player.setStatistic(Statistic.TIME_SINCE_REST, 0);
-        playerData.set(playerID+".enabled",true);
+        playerData.set(playerID+".phantomsDisabled",true);
         plugin.savePlayerData(playerData);
         String colorMessage = plugin.hex(
                 config.getString("textPhantomsDisabled").replaceAll("%textHeader%",config.getString("textHeader"))
@@ -131,10 +131,6 @@ public class CommandPhantoms implements CommandExecutor, TabCompleter {
                 Player player = (Player) sender;
                 autoCompleteOptions.add("on");
                 autoCompleteOptions.add("off");
-                if(player.hasPermission("phantomtoggle.reload"))
-                {
-                    autoCompleteOptions.add("reload");
-                }
             }
         }
         return autoCompleteOptions;

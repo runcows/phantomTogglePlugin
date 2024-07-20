@@ -9,11 +9,15 @@ commands:
         description: toggles phantom spawning on or off per player
         usage: /phantoms [on/off]
         permission: PhantomToggle.use
+    phantomToggle:
+        description: admin level control over the plugin
+        usage: /phantomToggle [reload/config]
+        permission: PhantomToggle.admin
 
 permissions:
     use:
         description: Allows you to use the command /phantoms
         default: true
-    reload:
-        description: Allows you to reload config from file
+    admin:
+        description: Allows you to use /phantom Toggle
         default: op

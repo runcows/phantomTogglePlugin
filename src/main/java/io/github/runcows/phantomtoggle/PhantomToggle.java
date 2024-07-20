@@ -3,6 +3,7 @@ package io.github.runcows.phantomtoggle;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Statistic;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -34,20 +35,19 @@ public class PhantomToggle extends JavaPlugin
     @Override
     public void onEnable()
     {
-        //getLogger().info("onEnable is called!");
         saveDefaultConfig();
         config = this.getConfig();
-
-        this.getCommand("phantoms").setExecutor(new CommandPhantoms());
         createPlayerData();
-        long timer = config.getLong("timeSinceLastRestResetTimer") * 20;
+        this.getCommand("phantoms").setExecutor(new CommandPhantoms());
+        this.getCommand("phantomToggle").setExecutor(new CommandPhantomToggle());
+        getServer().getPluginManager().registerEvents(new SleepListener(), this);
+        long timer = config.getLong("restTimeResetTimer") * 20;
         resetTime.runTaskTimer(this, 0,timer);
     }
 
     @Override
     public void onDisable()
     {
-        //getLogger().info("onDisable is called!");
         savePlayerData(playerData);
         saveConfig();
     }
@@ -55,7 +55,7 @@ public class PhantomToggle extends JavaPlugin
     public void reloadTimer()
     {
         resetTime.cancel();
-        long timer = config.getLong("timeSinceLastRestResetTimer") * 20;
+        long timer = config.getLong("restTimeResetTimer") * 20;
         resetTime = createNewResetTimer();
         resetTime.runTaskTimer(this,0,timer);
     }
@@ -73,7 +73,16 @@ public class PhantomToggle extends JavaPlugin
             saveResource("playerData.yml",false);
         }
         playerData = new YamlConfiguration();
-        YamlConfiguration.loadConfiguration(playerDataFile);
+        try
+        {
+            playerData.load(playerDataFile);
+        }
+        catch (IOException | InvalidConfigurationException e)
+        {
+            e.printStackTrace();
+        }
+        //YamlConfiguration.loadConfiguration(playerDataFile);
+        // the above (commented out) supposedly also works but I don't understand why
     }
     public void savePlayerData(FileConfiguration playerData)
     {
@@ -109,10 +118,10 @@ public class PhantomToggle extends JavaPlugin
             @Override
             public void run()
             {
-                boolean trackTimeEnabled = config.getString("oldSleepTimeMode").equals("track");
+                boolean trackTimeEnabled = config.getString("statHandlingMode").equals("track");
                 for(String playerID : playerData.getKeys(false))
                 {
-                    if (playerData.getBoolean(playerID + ".enabled"))
+                    if (playerData.getBoolean(playerID + ".phantomsDisabled") && Bukkit.getPlayer(UUID.fromString(playerID)) != null)
                     {
                         if(trackTimeEnabled)
                         {
