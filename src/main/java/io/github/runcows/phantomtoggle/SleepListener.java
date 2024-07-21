@@ -21,6 +21,10 @@ public class SleepListener implements Listener {
             if (player.getStatistic(Statistic.TIME_SINCE_REST) == 0)
             {// they succesfully slept
                 String playerID = player.getUniqueId().toString();
+                if (!playerData.contains(playerID))
+                {// don't log the sleep time of players who haven't even touched this lol. Keep file sizes down when you can
+                    return;
+                }
                 playerData.set(playerID+".prevSleepTime",player.getStatistic(Statistic.TIME_SINCE_REST));
                 plugin.savePlayerData(playerData);
             }

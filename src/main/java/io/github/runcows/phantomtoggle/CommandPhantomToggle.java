@@ -12,10 +12,6 @@ import java.util.List;
 public class CommandPhantomToggle implements CommandExecutor, TabCompleter {
     PhantomToggle plugin = PhantomToggle.getInstance();
     FileConfiguration config = plugin.getConfig();
-
-    //NEXT STEPS WITH THIS]
-        //do we want a help command? idk maybe. Don't care too much, but sure I guess
-
     // oh i think i understand why people dont do this
         // editing config options from commands, that is
     // the only people who have access are the admins anyway
@@ -29,7 +25,8 @@ public class CommandPhantomToggle implements CommandExecutor, TabCompleter {
             //one argument, must be reload
             if (!args[0].equals("reload"))
             {
-                return false;
+                sender.sendMessage(helpMessage());
+                return true;
             }
             // reload config from file
             plugin.reloadConfig();
@@ -47,13 +44,19 @@ public class CommandPhantomToggle implements CommandExecutor, TabCompleter {
             //three arguments, must be a config
             if (!args[0].equals("config"))
             {
+                sender.sendMessage(helpMessage());
                 return false;
             }
             if (args[1].equals("statHandlingMode"))
             {
                 if (!args[2].equals("track") && !args[2].equals("reset") && !args[2].equals("pause"))
                 {// check to make sure it matches the modes
-                    return false;
+                    sender.sendMessage(
+                            plugin.hex(
+                                    config.getString("textHeader") + " For config option statHandlingMode, the only options are track, reset, and pause"
+                            )
+                    );
+                    return true;
                 }
                 //set the config
                 config.set("statHandlingMode", args[2]);
@@ -69,10 +72,15 @@ public class CommandPhantomToggle implements CommandExecutor, TabCompleter {
             }
             if (args[1].equals("restTimeResetTimer"))
             {
-                // check to make sure its a long
+                // check to make sure its a long, or just check if theres a positive value lol
                 if(Integer.valueOf(args[2]) <= 0)
                 {
-                    return false;
+                    sender.sendMessage(
+                            plugin.hex(
+                                    config.getString("textHeader") + " For config option restTimeResetTimer, you must enter a positive integer"
+                            )
+                    );
+                    return true;
                 }
                 //set the config
                 config.set("restTimeResetTimer", Integer.valueOf(args[2]));
@@ -88,7 +96,18 @@ public class CommandPhantomToggle implements CommandExecutor, TabCompleter {
                 return true;
             }
         }
+        sender.sendMessage(helpMessage());
         return false;
+    }
+
+    private String helpMessage()
+    {
+        return plugin.hex(
+                config.getString("textHeader") + " /phantomToggle help\n" +
+                        "\"reload\" to reload config from file\n" +
+                        "\"config\" to edit config in-game\n" +
+                        "\"help\" to view this message"
+        );
     }
 
     @Override

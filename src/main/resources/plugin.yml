@@ -11,7 +11,7 @@ commands:
         permission: PhantomToggle.use
     phantomToggle:
         description: admin level control over the plugin
-        usage: /phantomToggle [reload/config]
+        usage: /phantomToggle [reload/config/help]
         permission: PhantomToggle.admin
 
 permissions:
