@@ -101,6 +101,7 @@ public class CommandPhantoms implements CommandExecutor, TabCompleter {
         {
             player.setStatistic(Statistic.TIME_SINCE_REST, 0);
         }
+        playerData.set(playerID+".username", player.getName());
         playerData.set(playerID+".phantomsDisabled", false);
         plugin.savePlayerData(playerData);
         String colorMessage = plugin.hex(
@@ -111,6 +112,7 @@ public class CommandPhantoms implements CommandExecutor, TabCompleter {
 
     private void disablePhantomSpawns(Player player, String playerID, FileConfiguration playerData)
     {
+        playerData.set(playerID+".username", player.getName());
         playerData.set(playerID+".prevSleepTime",player.getStatistic(Statistic.TIME_SINCE_REST)); //just log it anyway
         player.setStatistic(Statistic.TIME_SINCE_REST, 0);
         playerData.set(playerID+".phantomsDisabled",true);
