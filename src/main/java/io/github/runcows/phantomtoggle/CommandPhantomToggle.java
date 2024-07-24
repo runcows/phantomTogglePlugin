@@ -103,10 +103,10 @@ public class CommandPhantomToggle implements CommandExecutor, TabCompleter {
     private String helpMessage()
     {
         return plugin.hex(
-                config.getString("textHeader") + " /phantomToggle help\n" +
-                        "\"reload\" to reload config from file\n" +
-                        "\"config\" to edit config in-game\n" +
-                        "\"help\" to view this message"
+                config.getString("textHeader") + " &l/phantomToggle help&r\n" +
+                        " &7- &r\"reload\" to reload config from file\n" +
+                        " &7- &r\"config\" to edit config in-game\n" +
+                        " &7- &r\"help\" to view this message"
         );
     }
 
@@ -117,6 +117,7 @@ public class CommandPhantomToggle implements CommandExecutor, TabCompleter {
         {
             options.add("reload");
             options.add("config");
+            options.add("help");
         }
         else if (args.length == 2)
         {
