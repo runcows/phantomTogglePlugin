@@ -19,5 +19,5 @@ permissions:
         description: Allows you to use the command /phantoms
         default: true
     admin:
-        description: Allows you to use /phantom Toggle
+        description: Allows you to use /phantomToggle
         default: op
