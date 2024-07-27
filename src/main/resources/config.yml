@@ -32,7 +32,7 @@ statHandlingMode: track
 textHeader: "&r[&#485791Phantom&#21ae06Toggle&r]"
 #       can be used in other text options as %textHeader%
 
-textReload: "%textHeader% Config Reloaded"
+textReload: "%textHeader% Config and PlayerData reloaded from file"
 
 textConfigChanged: '%textHeader% Config for %option% set to &d&l%value%&r, file updated'
 #       additional values here are %option% and %value%

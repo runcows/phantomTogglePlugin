@@ -126,7 +126,7 @@ public class CommandPhantoms implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         List<String> autoCompleteOptions = new ArrayList<>();
-        if (command.getName().equals("phantoms") && args.length >= 0)
+        if (command.getName().equals("phantoms") && args.length == 1)
         {
             if (sender instanceof Player)
             {

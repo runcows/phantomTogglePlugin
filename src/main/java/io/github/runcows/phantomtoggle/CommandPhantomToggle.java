@@ -28,11 +28,12 @@ public class CommandPhantomToggle implements CommandExecutor, TabCompleter {
                 sender.sendMessage(helpMessage());
                 return true;
             }
-            // reload config from file
+            // reload config & playerData from file
             plugin.reloadConfig();
             plugin.config = plugin.getConfig();
             this.config = plugin.getConfig();
             plugin.reloadTimer();
+            plugin.reloadPlayerData();
             String colorMessage = plugin.hex(
                     config.getString("textReload").replaceAll("%textHeader%",config.getString("textHeader"))
             );

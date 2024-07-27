@@ -37,7 +37,7 @@ public class PhantomToggle extends JavaPlugin
     {
         saveDefaultConfig();
         config = this.getConfig();
-        createPlayerData();
+        reloadPlayerData();
         this.getCommand("phantoms").setExecutor(new CommandPhantoms());
         this.getCommand("phantomToggle").setExecutor(new CommandPhantomToggle());
         getServer().getPluginManager().registerEvents(new SleepListener(), this);
@@ -64,7 +64,7 @@ public class PhantomToggle extends JavaPlugin
     {
         return this.playerData;
     }
-    private void createPlayerData()
+    public void reloadPlayerData()
     {
         playerDataFile = new File(getDataFolder(), "playerData.yml");
         if(!playerDataFile.exists())
@@ -81,16 +81,12 @@ public class PhantomToggle extends JavaPlugin
         {
             e.printStackTrace();
         }
-        //YamlConfiguration.loadConfiguration(playerDataFile);
-        // the above (commented out) supposedly also works but I don't understand why
     }
     public void savePlayerData(FileConfiguration playerData)
     {
         try
         {
-            playerData.save("playerData.yml");
             playerData.save(playerDataFile);
-
         }
         catch (IOException e)
         {
@@ -114,7 +110,7 @@ public class PhantomToggle extends JavaPlugin
     private BukkitRunnable createNewResetTimer()
     {
         return new BukkitRunnable()
-        {
+        {// with this amount of indentation, I want Jerma to put me through a meat grinder
             @Override
             public void run()
             {

@@ -9,11 +9,12 @@ import org.bukkit.event.player.PlayerBedLeaveEvent;
 
 public class SleepListener implements Listener {
     PhantomToggle plugin = PhantomToggle.getInstance();
-    FileConfiguration playerData = plugin.getPlayerData();
     FileConfiguration config;
+    FileConfiguration playerData;
     @EventHandler
     public void onPlayerLeaveBed(PlayerBedLeaveEvent event)
     {
+        playerData = plugin.getPlayerData();
         config = plugin.getConfig();
         if (config.getString("statHandlingMode").equals("track"))
         {
